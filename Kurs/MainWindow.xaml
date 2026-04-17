@@ -1,0 +1,359 @@
+﻿<Window x:Class="Kurs.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="АЛТЫН - Главная" Height="700" Width="1100" WindowStartupLocation="CenterScreen"
+        Icon="ico.ico">
+
+    <Window.Resources>
+        <Style x:Key="MenuButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="Margin" Value="10,2"/>
+            <Setter Property="Padding" Value="15,0,0,0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#34495E"/>
+                </Trigger>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="Background" Value="#D4AF37"/>
+                    <Setter Property="FontWeight" Value="Bold"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="FilterButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#3498DB"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Margin" Value="5,0"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#2980B9"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="SearchTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Width" Value="180"/>
+            <Setter Property="Margin" Value="5,0"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="5,3"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Background="#2C3E50">
+            <StackPanel x:Name="SideMenu">
+                <TextBlock Text="АЛТЫН" Foreground="#D4AF37" FontSize="28" FontWeight="Bold"
+                           Margin="20,30,20,10" HorizontalAlignment="Center"/>
+                <TextBlock x:Name="txtUserInfo" Foreground="White" Margin="20,0,20,30"
+                           TextAlignment="Center" TextWrapping="Wrap"/>
+
+                <Button x:Name="btnHome"      Content="🏠 Главная"   Style="{StaticResource MenuButtonStyle}" Click="OpenHome"/>
+                <Button x:Name="btnClients"   Content="👥 Клиенты"   Style="{StaticResource MenuButtonStyle}" Click="OpenClients"/>
+                <Button x:Name="btnContracts" Content="📄 Контракты" Style="{StaticResource MenuButtonStyle}" Click="OpenContracts"/>
+                <Button x:Name="btnWarehouse" Content="📦 Склад"     Style="{StaticResource MenuButtonStyle}" Click="OpenWarehouse"/>
+                <Button x:Name="btnAdmin"     Content="⚙️ Админ"     Style="{StaticResource MenuButtonStyle}" Click="OpenAdmin"/>
+
+                <Button Content="Выход" Click="Logout_Click"
+                        Margin="20,100,20,0" Foreground="#BDC3C7" Background="Transparent"/>
+            </StackPanel>
+        </Border>
+
+        <TabControl x:Name="MainContent" Grid.Column="1" BorderThickness="0"
+                    SelectionChanged="MainContent_SelectionChanged">
+            <TabControl.ItemContainerStyle>
+                <Style TargetType="TabItem">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </Style>
+            </TabControl.ItemContainerStyle>
+
+            <!-- ========== ГЛАВНАЯ ========== -->
+            <TabItem>
+                <StackPanel Margin="20">
+                    <TextBlock Text="Текущая аналитика" FontSize="22" FontWeight="Bold" Margin="5,0,0,20"/>
+
+                    <UniformGrid Columns="2" Margin="0,0,0,20">
+                        <Border Background="#3498DB" CornerRadius="8" Margin="5" Padding="20">
+                            <StackPanel>
+                                <TextBlock Text="Активных контрактов" Foreground="White" FontSize="14"/>
+                                <TextBlock x:Name="txtActiveContracts" Text="0"
+                                           Foreground="White" FontSize="32" FontWeight="Bold"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Background="#27AE60" CornerRadius="8" Margin="5" Padding="20">
+                            <StackPanel>
+                                <TextBlock Text="Общая сумма займов" Foreground="White" FontSize="14"/>
+                                <TextBlock x:Name="txtTotalSum" Text="0 ₽"
+                                           Foreground="White" FontSize="32" FontWeight="Bold"/>
+                            </StackPanel>
+                        </Border>
+                    </UniformGrid>
+
+                    <Button Content="📊 Отчет в Excel" Click="btnExportExcel_Click" 
+                            Background="#27AE60" Foreground="White" Padding="10,5" Margin="5"/>
+
+                    <TextBlock Text="Цены выкупа металла" FontSize="18" Margin="5,20,0,6"/>
+
+                    <StackPanel Orientation="Horizontal" Margin="5,0,0,6">
+                        <Button Content="✏️ Изменить цену"
+                                Click="btnEditRate_Click"
+                                Padding="12,4"
+                                Background="#2980B9" Foreground="White"/>
+                    </StackPanel>
+
+                    <DataGrid x:Name="gridPurchaseRates" Height="220"
+                              AutoGenerateColumns="False" IsReadOnly="True"
+                              SelectionMode="Single" Margin="5">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Металл"
+                                                Binding="{Binding MetalsCatalog.MetalName}" Width="*"/>
+                            <DataGridTextColumn Header="Проба"
+                                                Binding="{Binding MetalsCatalog.PurityValue}" Width="80"/>
+                            <DataGridTextColumn Header="Цена за гр."
+                                                Binding="{Binding PricePerGram, StringFormat={}{0:F2} ₽}" Width="110"/>
+                            <DataGridTextColumn Header="Дата изменения"
+                                                Binding="{Binding UpdateDate, StringFormat={}{0:dd.MM.yyyy HH:mm}}"
+                                                Width="150"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </TabItem>
+
+            <!-- ========== КОНТРАКТЫ ========== -->
+            <TabItem>
+                <Grid Margin="20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
+                        <Button Content="+ Новый договор" Click="btnNewContract_Click"
+                                Padding="15,5" Background="#27AE60" Foreground="White"/>
+                        <Button x:Name="btnFinishContract" Content="✅ Выкупить (закрыть)"
+                                Click="btnFinishContract_Click"
+                                Background="#E67E22" Foreground="White"
+                                Padding="15,5" Margin="5,0,0,0"/>
+                        <Button Content="💰 Продать изделие"
+                                Click="btnSellItem_Click"
+                                Background="#8E44AD" Foreground="White"
+                                Padding="15,5" Margin="5,0,0,0"
+                                ToolTip="Продать изделие из просроченного договора покупателю"/>
+                        <Button Content="Распечатать договор" Click="btnPrintContract_Click" 
+                                Background="DarkBlue" Foreground="White" Padding="10,5" Margin="5"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,10">
+                        <TextBlock Text="🔍 Поиск:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                        <TextBox x:Name="txtSearchContracts" Style="{StaticResource SearchTextBoxStyle}"
+                                 TextChanged="txtSearchContracts_TextChanged"
+                                 ToolTip="Поиск по фамилии клиента"/>
+
+                        <TextBlock Text="Статус:" VerticalAlignment="Center" Margin="10,0,5,0"/>
+                        <ComboBox x:Name="cmbContractStatus" Width="150" SelectionChanged="cmbContractStatus_SelectionChanged">
+                            <ComboBoxItem Content="Все статусы" IsSelected="True"/>
+                            <ComboBoxItem Content="Активен"/>
+                            <ComboBoxItem Content="Закрыт"/>
+                            <ComboBoxItem Content="Просрочен"/>
+                        </ComboBox>
+
+                        <Button Content="🔄 Сбросить" Click="btnResetContractFilters_Click"
+                                Style="{StaticResource FilterButtonStyle}" Background="#95A5A6"/>
+                    </StackPanel>
+
+                    <DataGrid x:Name="gridContracts" Grid.Row="2" AutoGenerateColumns="False" IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="№"       Binding="{Binding ContractID}"       Width="50"/>
+                            <DataGridTextColumn Header="Клиент"  Binding="{Binding Clients.LastName}"  Width="*"/>
+                            <DataGridTextColumn Header="Сумма"   Binding="{Binding LoanAmount}"        Width="100"/>
+                            <DataGridTextColumn Header="Статус"  Binding="{Binding Status}"            Width="100"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+
+            <!-- ========== КЛИЕНТЫ ========== -->
+            <TabItem>
+                <Grid Margin="20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
+                        <Button Content="➕ Добавить"      Click="btnAddClient_Click"  Margin="0,0,5,0"  Padding="10,2"/>
+                        <Button Content="✏️ Редактировать" Click="btnEditClient_Click" Margin="0,0,10,0" Padding="10,2"/>
+                        <Button Content="🔄 Обновить"      Click="RefreshClients_Click" Margin="0,0,10,0" Padding="10,0"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,10">
+                        <TextBlock Text="🔍 Поиск:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                        <TextBox x:Name="txtSearchClients" Style="{StaticResource SearchTextBoxStyle}"
+                                 TextChanged="txtSearchClients_TextChanged"
+                                 ToolTip="Поиск по фамилии"/>
+
+                        <TextBox x:Name="txtSearchClientPhone" Style="{StaticResource SearchTextBoxStyle}"
+                                 TextChanged="txtSearchClientPhone_TextChanged"
+                                 ToolTip="Поиск по телефону"/>
+
+                        <TextBlock Text="Сортировка:" VerticalAlignment="Center" Margin="10,0,5,0"/>
+                        <ComboBox x:Name="cmbClientSort" Width="150" SelectionChanged="cmbClientSort_SelectionChanged">
+                            <ComboBoxItem Content="По фамилии (А-Я)" IsSelected="True"/>
+                            <ComboBoxItem Content="По фамилии (Я-А)"/>
+                            <ComboBoxItem Content="По дате добавления"/>
+                        </ComboBox>
+
+                        <Button Content="🔄 Сбросить" Click="btnResetClientFilters_Click"
+                                Style="{StaticResource FilterButtonStyle}" Background="#95A5A6"/>
+                    </StackPanel>
+
+                    <DataGrid x:Name="gridClients" Grid.Row="2" AutoGenerateColumns="False" IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID"        Binding="{Binding ClientID}"   Width="50"/>
+                            <DataGridTextColumn Header="Фамилия"   Binding="{Binding LastName}"   Width="*"/>
+                            <DataGridTextColumn Header="Имя"       Binding="{Binding FirstName}"  Width="*"/>
+                            <DataGridTextColumn Header="Отчество"  Binding="{Binding MiddleName}" Width="*"/>
+                            <DataGridTextColumn Header="Телефон"   Binding="{Binding Phone}"      Width="120"/>
+                            <DataGridTextColumn Header="Паспорт"   Binding="{Binding Passport}"   Width="150"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+
+            <!-- ========== СКЛАД ========== -->
+            <TabItem>
+                <Grid Margin="20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
+                        <TextBlock Text="🔍 Поиск:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                        <TextBox x:Name="txtSearchItems" Style="{StaticResource SearchTextBoxStyle}"
+                                 TextChanged="txtSearchItems_TextChanged"
+                                 ToolTip="Поиск по описанию"/>
+
+                        <TextBlock Text="Тип:" VerticalAlignment="Center" Margin="10,0,5,0"/>
+                        <ComboBox x:Name="cmbItemType" Width="150" SelectionChanged="cmbItemType_SelectionChanged">
+                            <ComboBoxItem Content="Все типы" IsSelected="True"/>
+                        </ComboBox>
+
+                        <TextBlock Text="Металл:" VerticalAlignment="Center" Margin="10,0,5,0"/>
+                        <ComboBox x:Name="cmbItemMetal" Width="150" SelectionChanged="cmbItemMetal_SelectionChanged">
+                            <ComboBoxItem Content="Все металлы" IsSelected="True"/>
+                        </ComboBox>
+
+                        <Button Content="🔄 Сбросить" Click="btnResetItemFilters_Click"
+                                Style="{StaticResource FilterButtonStyle}" Background="#95A5A6"/>
+                    </StackPanel>
+
+                    <DataGrid x:Name="gridItems" Grid.Row="2" 
+                              AutoGenerateColumns="False" IsReadOnly="True"
+                              SelectionMode="Single">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Описание" Binding="{Binding ItemDescription}" Width="*"/>
+                            <DataGridTextColumn Header="Вес" Binding="{Binding Weight, StringFormat={}{0:F2} г}" Width="100"/>
+                            <DataGridTextColumn Header="Оценка" Binding="{Binding EstimatedValue, StringFormat={}{0:F2} ₽}" Width="120"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,15,0,10">
+                        <Button x:Name="btnFirst" Content="⏮" Width="30" Click="btnFirstPage_Click" Margin="2,0"/>
+                        <Button x:Name="btnPrev" Content="◀" Width="30" Click="btnPrevPage_Click" Margin="2,0"/>
+
+                        <TextBlock Text="Страница" VerticalAlignment="Center" Margin="10,0,5,0"/>
+                        <TextBox x:Name="txtCurrentPage" Width="40" Text="1" TextAlignment="Center" 
+                                 VerticalContentAlignment="Center" PreviewTextInput="txtCurrentPage_PreviewTextInput"
+                                 LostFocus="txtCurrentPage_LostFocus" KeyDown="txtCurrentPage_KeyDown"/>
+                        <TextBlock Text="из" VerticalAlignment="Center" Margin="5,0"/>
+                        <TextBlock x:Name="txtTotalPages" Text="1" VerticalAlignment="Center" FontWeight="Bold"/>
+
+                        <Button x:Name="btnNext" Content="▶" Width="30" Click="btnNextPage_Click" Margin="2,0"/>
+                        <Button x:Name="btnLast" Content="⏭" Width="30" Click="btnLastPage_Click" Margin="2,0"/>
+
+                        <Separator Margin="15,0" Background="Transparent"/>
+
+                        <TextBlock Text="Показать:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                        <ComboBox x:Name="cmbPageSize" Width="60" SelectionChanged="cmbPageSize_SelectionChanged">
+                            <ComboBoxItem Content="10" IsSelected="True"/>
+                            <ComboBoxItem Content="25"/>
+                            <ComboBoxItem Content="50"/>
+                            <ComboBoxItem Content="100"/>
+                        </ComboBox>
+                        <TextBlock Text="записей" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                    </StackPanel>
+
+                    <TextBlock x:Name="txtItemsInfo" Grid.Row="4" 
+                               HorizontalAlignment="Center" Margin="0,5,0,0" 
+                               Foreground="#7F8C8D" FontSize="11"/>
+                </Grid>
+            </TabItem>
+
+            <!-- ========== АДМИН ========== -->
+            <TabItem>
+                <Grid Margin="20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="Управление персоналом"
+                               FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
+
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,10">
+                        <Button Content="➕ Новый сотрудник" Click="btnAddEmployee_Click"
+                                Margin="0,0,5,0" Padding="10,2"/>
+                        <Button Content="✏️ Изменить"        Click="btnEditEmployee_Click"
+                                Padding="10,2" Margin="0,0,10,0"/>
+                        <Button Content="📋 Журнал действий" Click="btnOpenLogs_Click"
+                                Background="#2C3E50" Foreground="White" Padding="10,2"
+                                ToolTip="Просмотр журнала всех действий пользователей"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,10">
+                        <TextBlock Text="🔍 Поиск:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                        <TextBox x:Name="txtSearchUsers" Style="{StaticResource SearchTextBoxStyle}"
+                                 TextChanged="txtSearchUsers_TextChanged"
+                                 ToolTip="Поиск по ФИО или логину"/>
+
+                        <TextBlock Text="Роль:" VerticalAlignment="Center" Margin="10,0,5,0"/>
+                        <ComboBox x:Name="cmbUserRole" Width="150" SelectionChanged="cmbUserRole_SelectionChanged">
+                            <ComboBoxItem Content="Все роли" IsSelected="True"/>
+                        </ComboBox>
+
+                        <Button Content="🔄 Сбросить" Click="btnResetUserFilters_Click"
+                                Style="{StaticResource FilterButtonStyle}" Background="#95A5A6"/>
+                    </StackPanel>
+
+                    <DataGrid x:Name="gridUsers" Grid.Row="3" AutoGenerateColumns="False" IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Логин" Binding="{Binding Login}"              Width="100"/>
+                            <DataGridTextColumn Header="ФИО"   Binding="{Binding FullName}"           Width="*"/>
+                            <DataGridTextColumn Header="Роль"  Binding="{Binding UserRoles.RoleName}" Width="150"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>

@@ -1,0 +1,98 @@
+﻿<Window x:Class="Kurs.LogViwerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Журнал действий" Height="520" Width="900"
+        WindowStartupLocation="CenterOwner" Icon="ico.ico">
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Заголовок -->
+        <TextBlock Grid.Row="0"
+                   Text="Журнал действий пользователей"
+                   FontSize="18" FontWeight="Bold" Margin="0,0,0,12"/>
+
+        <!-- Панель фильтров -->
+        <WrapPanel Grid.Row="1" Margin="0,0,0,10">
+            <TextBlock Text="С:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+            <DatePicker x:Name="dpFrom" Width="130" Margin="0,0,12,0"/>
+
+            <TextBlock Text="По:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+            <DatePicker x:Name="dpTo"   Width="130" Margin="0,0,12,0"/>
+
+            <TextBlock Text="Пользователь:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+            <TextBox x:Name="txtFilterUser" Width="140" Padding="4,3"
+                     Margin="0,0,12,0" VerticalContentAlignment="Center"/>
+
+            <TextBlock Text="Действие:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+            <ComboBox x:Name="comboAction" Width="160" Margin="0,0,12,0" Padding="4,3"/>
+
+            <Button Content="🔍 Применить"
+                    Click="btnFilter_Click"
+                    Padding="10,4" Background="#2980B9" Foreground="White"
+                    Margin="0,0,6,0"/>
+            <Button Content="Сбросить"
+                    Click="btnReset_Click"
+                    Padding="10,4"/>
+        </WrapPanel>
+
+        <!-- Таблица -->
+        <DataGrid Grid.Row="2" x:Name="gridLogs"
+                  AutoGenerateColumns="False" IsReadOnly="True"
+                  AlternatingRowBackground="#F5F5F5"
+                  GridLinesVisibility="Horizontal"
+                  BorderBrush="#DDDDDD" BorderThickness="1">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Дата и время"
+                                    Binding="{Binding Time, StringFormat={}{0:dd.MM.yyyy HH:mm:ss}}"
+                                    Width="160"/>
+                <DataGridTextColumn Header="Пользователь"
+                                    Binding="{Binding UserName}"
+                                    Width="160"/>
+                <DataGridTextColumn Header="Действие"
+                                    Binding="{Binding Action}"
+                                    Width="200"/>
+                <DataGridTextColumn Header="Подробности"
+                                    Binding="{Binding Details}"
+                                    Width="*"/>
+            </DataGrid.Columns>
+
+            <!-- Цветовая маркировка строк по типу действия -->
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Action}" Value="Вход в систему">
+                            <Setter Property="Background" Value="#E8F8E8"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Action}" Value="Выход из системы">
+                            <Setter Property="Background" Value="#FFF3E0"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Action}" Value="Добавление пользователя">
+                            <Setter Property="Background" Value="#E3F2FD"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Action}" Value="Новый договор">
+                            <Setter Property="Background" Value="#EDE7F6"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Action}" Value="Изменена цена металла">
+                            <Setter Property="Background" Value="#FFF9C4"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+        </DataGrid>
+
+        <!-- Статус-бар -->
+        <Border Grid.Row="3" Background="#F0F0F0" Padding="8,5" Margin="0,8,0,0"
+                BorderBrush="#DDDDDD" BorderThickness="1">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock x:Name="txtCount" Foreground="#555" FontWeight="Bold"/>
+                <TextBlock Text="   |   " Foreground="#AAA"/>
+                <TextBlock x:Name="txtLastLogin" Foreground="#555"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

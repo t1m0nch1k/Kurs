@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="a07123a51a494d819cccad89021dfcdb" Name="Diagram1" ZoomLevel="63">
+        <EntityTypeShape EntityType="LombardDBModel.Clients" Width="1.5" PointX="3" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="LombardDBModel.Items" Width="1.5" PointX="3" PointY="3.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="LombardDBModel.ItemTypes" Width="1.5" PointX="0.75" PointY="1.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="LombardDBModel.MetalsCatalog" Width="1.5" PointX="0.75" PointY="4.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="LombardDBModel.PurchaseRates" Width="1.5" PointX="3" PointY="8.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="LombardDBModel.Redemptions" Width="1.5" PointX="7.5" PointY="4.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="LombardDBModel.Sales" Width="1.5" PointX="10.5" PointY="4.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="LombardDBModel.sysdiagrams" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="LombardDBModel.UserRoles" Width="1.5" PointX="0.75" PointY="12" IsExpanded="true" />
+        <EntityTypeShape EntityType="LombardDBModel.Users" Width="1.5" PointX="3" PointY="11.625" IsExpanded="true" />
+        <AssociationConnector Association="LombardDBModel.FK__Items__AssayID__5AEE82B9" ManuallyRouted="false" />
+        <AssociationConnector Association="LombardDBModel.FK__Items__TypeID__59FA5E80" ManuallyRouted="false" />
+        <AssociationConnector Association="LombardDBModel.FK__Sales__ItemID__693CA210" ManuallyRouted="false" />
+        <AssociationConnector Association="LombardDBModel.FK__PurchaseR__Assay__5441852A" ManuallyRouted="false" />
+        <AssociationConnector Association="LombardDBModel.FK__Users__RoleID__4D94879B" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="LombardDBModel.ContractItems" Width="1.5" PointX="7.5" PointY="7.875" />
+        <EntityTypeShape EntityType="LombardDBModel.ShopInventory" Width="1.5" PointX="9.75" PointY="8.25" />
+        <AssociationConnector Association="LombardDBModel.FK_ContractItems_Metals" />
+        <AssociationConnector Association="LombardDBModel.FK_Shop_Items" />
+        <EntityTypeShape EntityType="LombardDBModel.Contracts" Width="1.5" PointX="5.25" PointY="5.625" />
+        <AssociationConnector Association="LombardDBModel.FK__Contracts__Clien__5DCAEF64" />
+        <AssociationConnector Association="LombardDBModel.FK_ContractItems_Contracts" />
+        <AssociationConnector Association="LombardDBModel.FK__Contracts__UserI__5FB337D6" />
+        <AssociationConnector Association="LombardDBModel.FK__Redemptio__Contr__6477ECF3" />
+        <AssociationConnector Association="LombardDBModel.FK__Sales__ContractI__68487DD7" />
+        <AssociationConnector Association="LombardDBModel.FK_Items_ContractItems" ManuallyRouted="true" >
+          <ConnectorPoint PointX="7.5" PointY="9.8492414778645738" />
+          <ConnectorPoint PointX="6.5925" PointY="9.8492414778645738" />
+          <ConnectorPoint PointX="6.5925" PointY="9.5668340674691432" />
+          <ConnectorPoint PointX="6.083333333333333" PointY="9.5668340674691432" />
+          <ConnectorPoint PointX="5.916666666666667" PointY="9.5668340674691432" />
+          <ConnectorPoint PointX="4.75" PointY="9.5668340674691432" />
+          <ConnectorPoint PointX="4.75" PointY="8" />
+          <ConnectorPoint PointX="3.75" PointY="8" />
+          <ConnectorPoint PointX="3.75" PointY="7.201396484375" />
+        </AssociationConnector>
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
