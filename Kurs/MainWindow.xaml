@@ -265,15 +265,10 @@
                                 Style="{StaticResource FilterButtonStyle}" Background="#95A5A6"/>
                     </StackPanel>
 
-                    <DataGrid x:Name="gridItems" Grid.Row="2" 
-                              AutoGenerateColumns="False" IsReadOnly="True"
-                              SelectionMode="Single">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Описание" Binding="{Binding ItemDescription}" Width="*"/>
-                            <DataGridTextColumn Header="Вес" Binding="{Binding Weight, StringFormat={}{0:F2} г}" Width="100"/>
-                            <DataGridTextColumn Header="Оценка" Binding="{Binding EstimatedValue, StringFormat={}{0:F2} ₽}" Width="120"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                    <!-- Плиточное отображение изделий как на маркетплейсе -->
+                    <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <WrapPanel x:Name="panelItems" Orientation="Horizontal" ItemWidth="220"/>
+                    </ScrollViewer>
 
                     <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,15,0,10">
                         <Button x:Name="btnFirst" Content="⏮" Width="30" Click="btnFirstPage_Click" Margin="2,0"/>

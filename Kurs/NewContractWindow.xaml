@@ -1,7 +1,8 @@
 ﻿<Window x:Class="Kurs.NewContractWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Новый договор" Height="620" Width="900"
+        xmlns:local="clr-namespace:Kurs"
+        Title="Новый договор" Height="750" Width="900"
         WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
         Icon="ico.ico">
 
@@ -16,6 +17,9 @@
         <Style TargetType="ComboBox">
             <Setter Property="Padding" Value="5,4"/>
         </Style>
+        
+        <!-- Конвертер для отображения байтового массива как изображения -->
+        <local:ByteArrayToImageConverter x:Key="ByteArrayToImageConverter"/>
     </Window.Resources>
 
     <Border Padding="20">
@@ -39,6 +43,24 @@
                 <!-- Описание изделия -->
                 <TextBlock Text="Описание изделия" Style="{StaticResource Label}"/>
                 <TextBox x:Name="txtDescription" Margin="0,0,0,0"/>
+
+                <!-- Фотография изделия -->
+                <TextBlock Text="Фотография изделия" Style="{StaticResource Label}"/>
+                <Border x:Name="borderItemPhoto" BorderBrush="#CCCCCC" BorderThickness="1" 
+                        Height="150" Margin="0,0,0,5" Background="#F5F5F5">
+                    <Grid>
+                        <Image x:Name="imgItemPhoto" Stretch="Uniform"/>
+                        <TextBlock x:Name="txtPhotoPlaceholder" Text="Нет фото" 
+                                   VerticalAlignment="Center" HorizontalAlignment="Center"
+                                   Foreground="#999999" FontSize="14"/>
+                    </Grid>
+                </Border>
+                <Button Content="📷 Загрузить фото" Height="30" Margin="0,0,0,8"
+                        Background="#3498DB" Foreground="White"
+                        Click="btnLoadPhoto_Click"/>
+                <Button Content="🗑 Удалить фото" Height="30" Margin="0,0,0,8"
+                        Background="#E74C3C" Foreground="White"
+                        Click="btnRemovePhoto_Click"/>
 
                 <!-- Тип изделия -->
                 <TextBlock Text="Тип изделия" Style="{StaticResource Label}"/>
@@ -98,6 +120,19 @@
                           SelectionMode="Single"
                           CanUserResizeColumns="False">
                     <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="Фото" Width="60">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Image Width="50" Height="50" Stretch="UniformToFill">
+                                        <Image.Source>
+                                            <MultiBinding Converter="{StaticResource ByteArrayToImageConverter}">
+                                                <Binding Path="ItemPhoto"/>
+                                            </MultiBinding>
+                                        </Image.Source>
+                                    </Image>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                         <DataGridTextColumn Header="Описание"
                                             Binding="{Binding Description}" Width="*"/>
                         <DataGridTextColumn Header="Вес (г)"

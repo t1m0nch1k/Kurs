@@ -12,6 +12,7 @@ namespace Kurs
     {
         // Временный список изделий до сохранения договора
         private readonly List<ContractItems> _tempItems = new List<ContractItems>();
+        private byte[] _currentItemPhoto = null;
 
         public NewContractWindow()
         {
@@ -64,8 +65,7 @@ namespace Kurs
             RecalcItem(sender, e);
         }
 
-        /// <summary>
-        /// Пересчитывает оценочную стоимость текущего изделия:
+        /// <summary>Пересчитывает оценочную стоимость текущего изделия:
         /// ОценкаЗаКг = Вес × ЦенаЗаГрамм
         /// </summary>
         private void RecalcItem(object sender, EventArgs e)
@@ -94,6 +94,55 @@ namespace Kurs
         }
 
         // ---------------------------------------------------------------
+        // ЗАГРУЗКА И УДАЛЕНИЕ ФОТО ИЗДЕЛИЯ
+        // ---------------------------------------------------------------
+
+        /// <summary>
+        /// Загружает фотографию изделия из файла
+        /// </summary>
+        private void btnLoadPhoto_Click(object sender, RoutedEventArgs e)
+        {
+            var openFileDialog = new Microsoft.Win32.OpenFileDialog
+            {
+                Filter = "Изображения|*.jpg;*.jpeg;*.png;*.bmp;*.gif|Все файлы|*.*",
+                Title = "Выберите фотографию изделия"
+            };
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                try
+                {
+                    _currentItemPhoto = System.IO.File.ReadAllBytes(openFileDialog.FileName);
+                    
+                    // Отображаем фото в превью
+                    var bitmap = new System.Windows.Media.Imaging.BitmapImage();
+                    bitmap.BeginInit();
+                    bitmap.StreamSource = new System.IO.MemoryStream(_currentItemPhoto);
+                    bitmap.CacheOption = System.Windows.Media.Imaging.BitmapCacheOption.OnLoad;
+                    bitmap.EndInit();
+                    bitmap.Freeze();
+                    
+                    imgItemPhoto.Source = bitmap;
+                    txtPhotoPlaceholder.Visibility = Visibility.Collapsed;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Ошибка загрузки фото: " + ex.Message);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Удаляет загруженную фотографию изделия
+        /// </summary>
+        private void btnRemovePhoto_Click(object sender, RoutedEventArgs e)
+        {
+            _currentItemPhoto = null;
+            imgItemPhoto.Source = null;
+            txtPhotoPlaceholder.Visibility = Visibility.Visible;
+        }
+
+        // ---------------------------------------------------------------
         // ДОБАВЛЕНИЕ ИЗДЕЛИЯ В СПИСОК
         // ---------------------------------------------------------------
 
@@ -118,18 +167,20 @@ namespace Kurs
                 EstimatedValue = estimate,
                 Description = string.IsNullOrWhiteSpace(txtDescription.Text)
                                     ? $"{rate.MetalsCatalog?.MetalName} {rate.MetalsCatalog?.PurityValue}пр."
-                                    : txtDescription.Text.Trim()
+                                    : txtDescription.Text.Trim(),
+                ItemPhoto = _currentItemPhoto   // Сохраняем фотографию изделия
             };
 
             _tempItems.Add(item);
             RefreshGrid();
 
-            // Сброс полей изделия
+            // Сброс полей изделия включая фото
             txtDescription.Clear();
             txtWeight.Clear();
             txtEstimate.Clear();
             txtPricePerGram.Clear();
             comboMetals.SelectedIndex = -1;
+            btnRemovePhoto_Click(null, null); // Очищаем фото
         }
 
         /// <summary>Удаляет выбранное изделие из временного списка.</summary>
