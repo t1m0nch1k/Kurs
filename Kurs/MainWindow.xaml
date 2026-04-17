@@ -1,10 +1,14 @@
 ﻿<Window x:Class="Kurs.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:Kurs"
         Title="АЛТЫН - Главная" Height="700" Width="1100" WindowStartupLocation="CenterScreen"
         Icon="ico.ico">
 
     <Window.Resources>
+        <!-- Конвертер для отображения байтового массива как изображения -->
+        <local:ByteArrayToImageConverter x:Key="ByteArrayToImageConverter"/>
+    
         <Style x:Key="MenuButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="White"/>

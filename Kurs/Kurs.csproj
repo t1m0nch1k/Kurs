@@ -78,11 +78,12 @@
     </ApplicationDefinition>
     <Compile Include="AppLog.cs" />
     <Compile Include="AppSession.cs" />
-    <Compile Include="Clients.cs">
-      <DependentUpon>LombardModel.tt</DependentUpon>
-    </Compile>
+    <Compile Include="ByteArrayToImageConverter.cs" />
     <Compile Include="ClientWindow.xaml.cs">
       <DependentUpon>ClientWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Clients.cs">
+      <DependentUpon>LombardModel.tt</DependentUpon>
     </Compile>
     <Compile Include="ContractItems.cs">
       <DependentUpon>LombardModel.tt</DependentUpon>
