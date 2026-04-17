@@ -346,10 +346,15 @@ namespace Kurs
                         .Take(pageSize)
                         .ToList();
 
-                    // Добавлена проверка на null
-                    if (gridItems != null)
+                    // Отображение изделий в виде плиток как на маркетплейсе
+                    if (panelItems != null)
                     {
-                        gridItems.ItemsSource = items;
+                        panelItems.Children.Clear();
+                        foreach (var item in items)
+                        {
+                            var card = CreateItemCard(item);
+                            panelItems.Children.Add(card);
+                        }
                     }
 
                     UpdateWarehousePaginationUI();
@@ -359,6 +364,99 @@ namespace Kurs
             {
                 MessageBox.Show("Ошибка загрузки данных склада: " + ex.Message);
             }
+        }
+
+        /// <summary>
+        /// Создает карточку изделия для отображения в стиле маркетплейса
+        /// </summary>
+        private System.Windows.Controls.Border CreateItemCard(Items item)
+        {
+            var border = new System.Windows.Controls.Border
+            {
+                Width = 200,
+                Height = 280,
+                Margin = new System.Windows.Thickness(10),
+                Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 255, 255)),
+                BorderBrush = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(220, 220, 220)),
+                BorderThickness = new System.Windows.Thickness(1),
+                CornerRadius = new System.Windows.CornerRadius(8)
+            };
+
+            var stackPanel = new System.Windows.Controls.StackPanel
+            {
+                Margin = new System.Windows.Thickness(10)
+            };
+
+            // Изображение изделия
+            var image = new System.Windows.Controls.Image
+            {
+                Width = 180,
+                Height = 180,
+                Stretch = System.Windows.Media.Stretch.UniformToFill,
+                Margin = new System.Windows.Thickness(0, 0, 0, 10)
+            };
+
+            if (item.ItemPhoto != null && item.ItemPhoto.Length > 0)
+            {
+                var bitmap = new System.Windows.Media.Imaging.BitmapImage();
+                bitmap.BeginInit();
+                bitmap.StreamSource = new System.IO.MemoryStream(item.ItemPhoto);
+                bitmap.CacheOption = System.Windows.Media.Imaging.BitmapCacheOption.OnLoad;
+                bitmap.EndInit();
+                bitmap.Freeze();
+                image.Source = bitmap;
+            }
+            else
+            {
+                // Заглушка если нет фото
+                image.Source = null;
+            }
+
+            stackPanel.Children.Add(image);
+
+            // Описание
+            var descText = new System.Windows.Controls.TextBlock
+            {
+                Text = item.ItemDescription ?? "Без описания",
+                FontWeight = System.Windows.FontWeights.SemiBold,
+                FontSize = 14,
+                TextWrapping = System.Windows.TextWrapping.Wrap,
+                MaxHeight = 40,
+                Margin = new System.Windows.Thickness(0, 0, 0, 5)
+            };
+            stackPanel.Children.Add(descText);
+
+            // Вес
+            var weightText = new System.Windows.Controls.TextBlock
+            {
+                Text = $"Вес: {item.Weight:F2} г",
+                FontSize = 12,
+                Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(100, 100, 100)),
+                Margin = new System.Windows.Thickness(0, 0, 0, 3)
+            };
+            stackPanel.Children.Add(weightText);
+
+            // Цена
+            var priceText = new System.Windows.Controls.TextBlock
+            {
+                Text = $"{item.EstimatedValue:F0} ₽",
+                FontSize = 16,
+                FontWeight = System.Windows.FontWeights.Bold,
+                Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(212, 175, 55)), // Золотой цвет
+                Margin = new System.Windows.Thickness(0, 3, 0, 0)
+            };
+            stackPanel.Children.Add(priceText);
+
+            border.Child = stackPanel;
+            
+            // Добавляем обработчик клика для просмотра деталей
+            border.MouseLeftButtonUp += (s, e) =>
+            {
+                MessageBox.Show($"Изделие: {item.ItemDescription}\nВес: {item.Weight:F2} г\nОценка: {item.EstimatedValue:F0} ₽", 
+                    "Информация об изделии", MessageBoxButton.OK, MessageBoxImage.Information);
+            };
+
+            return border;
         }
 
         private void UpdateWarehousePaginationUI()
