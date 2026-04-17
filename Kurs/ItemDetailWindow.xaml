@@ -1,0 +1,104 @@
+<Window x:Class="Kurs.ItemDetailWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:Kurs"
+        Title="Информация об изделии" Height="600" Width="500" 
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+        Icon="ico.ico">
+
+    <Window.Resources>
+        <local:ByteArrayToImageConverter x:Key="ByteArrayToImageConverter"/>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Карточка товара" FontSize="24" FontWeight="Bold" 
+                   Foreground="#D4AF37" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <!-- Фотография изделия -->
+                <Border Background="White" BorderBrush="#D4AF37" BorderThickness="2" 
+                        CornerRadius="8" Margin="0,0,0,15" Padding="10">
+                    <StackPanel>
+                        <Image x:Name="imgItemPhoto" Width="280" Height="280" 
+                               Stretch="UniformToFill" Margin="0,0,0,10"/>
+                        <TextBlock x:Name="txtPhotoPlaceholder" Text="Нет фотографии" 
+                                   Foreground="#95A5A6" FontSize="16" 
+                                   HorizontalAlignment="Center" Visibility="Collapsed"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Основная информация -->
+                <GroupBox Header="Основная информация" Margin="0,0,0,10" Padding="10">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="Тип: " FontWeight="Bold" Width="100"/>
+                            <TextBlock x:Name="txtItemType" TextWrapping="Wrap"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="Металл: " FontWeight="Bold" Width="100"/>
+                            <TextBlock x:Name="txtMetalType" TextWrapping="Wrap"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="Проба: " FontWeight="Bold" Width="100"/>
+                            <TextBlock x:Name="txtPurity" TextWrapping="Wrap"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="Вес: " FontWeight="Bold" Width="100"/>
+                            <TextBlock x:Name="txtWeight" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+
+                <!-- Описание -->
+                <GroupBox Header="Описание" Margin="0,0,0,10" Padding="10">
+                    <TextBlock x:Name="txtDescription" TextWrapping="Wrap" 
+                               MaxHeight="100" TextTrimming="CharacterEllipsis"/>
+                </GroupBox>
+
+                <!-- Финансовая информация -->
+                <GroupBox Header="Финансовая информация" Margin="0,0,0,10" Padding="10">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="Оценочная стоимость: " FontWeight="Bold" Width="140"/>
+                            <TextBlock x:Name="txtEstimatedValue" FontWeight="Bold" 
+                                       Foreground="#D4AF37" FontSize="16"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="Договор №: " FontWeight="Bold" Width="140"/>
+                            <TextBlock x:Name="txtContractNumber" TextWrapping="Wrap"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="Статус: " FontWeight="Bold" Width="140"/>
+                            <TextBlock x:Name="txtStatus" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+
+                <!-- Дополнительная информация -->
+                <GroupBox Header="Дополнительно" Padding="10">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="Дата добавления: " FontWeight="Bold" Width="140"/>
+                            <TextBlock x:Name="txtAddDate" TextWrapping="Wrap"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="ID изделия: " FontWeight="Bold" Width="140"/>
+                            <TextBlock x:Name="txtItemID" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+            </StackPanel>
+        </ScrollViewer>
+
+        <Button Grid.Row="2" Content="Закрыть" Click="btnClose_Click" 
+                Background="#2C3E50" Foreground="White" 
+                Padding="20,8" Margin="0,15,0,0" FontSize="14"/>
+    </Grid>
+</Window>
