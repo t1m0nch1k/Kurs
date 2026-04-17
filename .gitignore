@@ -1,5 +1,5 @@
 ```
-# Build artifacts
+# Build outputs
 bin/
 obj/
 *.exe
@@ -14,13 +14,7 @@ packages/
 *.log
 
 # User-specific files
+.vs/
 *.user
 *.suo
-*.userosscache
-*.sln.docstates
-
-# Visual Studio files
-.vs/
-*.VC.db
-*.VC.VC.opendb
 ```

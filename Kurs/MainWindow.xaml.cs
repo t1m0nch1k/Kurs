@@ -453,8 +453,9 @@ namespace Kurs
             // Добавляем обработчик клика для просмотра деталей
             border.MouseLeftButtonUp += (s, e) =>
             {
-                MessageBox.Show($"Изделие: {item.ItemDescription}\nВес: {item.Weight:F2} г\nОценка: {item.EstimatedValue:F0} ₽", 
-                    "Информация об изделии", MessageBoxButton.OK, MessageBoxImage.Information);
+                var detailWindow = new ItemDetailWindow(item);
+                detailWindow.Owner = this;
+                detailWindow.ShowDialog();
             };
 
             return border;
@@ -1014,8 +1015,64 @@ namespace Kurs
                     worksheet.Cells[row, 3].Formula = $"=SUM(C2:C{row - 1})";
                     worksheet.Cells[row, 3].Font.Bold = true;
 
-                    worksheet.Columns.AutoFit();
-                    MessageBox.Show("Отчет Excel сформирован!");
+                    // Добавляем диаграмму
+                    if (data.Count > 0)
+                    {
+                        // Создаем сводные данные для диаграммы по статусам
+                        var statusData = data.GroupBy(c => c.Status)
+                                            .Select(g => new { Status = g.Key, Count = g.Count(), Sum = g.Sum(c => (decimal?)c.LoanAmount) ?? 0 })
+                                            .ToList();
+
+                        // Добавляем лист для диаграммы
+                        Excel._Worksheet chartSheet = (Excel._Worksheet)workbook.Worksheets.Add();
+                        chartSheet.Name = "Диаграмма статусов";
+
+                        // Заголовки
+                        chartSheet.Cells[1, 1] = "Статус";
+                        chartSheet.Cells[1, 2] = "Количество";
+                        chartSheet.Cells[1, 3] = "Сумма (₽)";
+
+                        int chartRow = 2;
+                        foreach (var status in statusData)
+                        {
+                            chartSheet.Cells[chartRow, 1] = status.Status;
+                            chartSheet.Cells[chartRow, 2] = status.Count;
+                            chartSheet.Cells[chartRow, 3] = status.Sum;
+                            chartRow++;
+                        }
+
+                        // Создаем диаграмму
+                        Excel.ChartObjects chartObjects = (Excel.ChartObjects)chartSheet.ChartObjects();
+                        Excel.ChartObject chartObj = chartObjects.Add(50, 150, 400, 300);
+                        Excel.Chart chart = chartObj.Chart;
+
+                        // Устанавливаем источник данных
+                        Excel.Range dataRange = chartSheet.get_Range("A1", $"C{chartRow - 1}");
+                        chart.SetSourceData(dataRange);
+
+                        // Тип диаграммы - гистограмма
+                        chart.ChartType = Excel.XlChartType.xlColumnClustered;
+                        chart.HasTitle = true;
+                        chart.ChartTitle.Text = "Распределение контрактов по статусам";
+
+                        // Настройка осей
+                        chart.Axes(Excel.XlAxisType.xlCategory).HasTitle = true;
+                        chart.Axes(Excel.XlAxisType.xlCategory).AxisTitle.Text = "Статус";
+                        chart.Axes(Excel.XlAxisType.xlValue).HasTitle = true;
+                        chart.Axes(Excel.XlAxisType.xlValue).AxisTitle.Text = "Количество";
+
+                        // Показываем легенду
+                        chart.HasLegend = true;
+                        chart.Legend.Position = Excel.XlLegendPosition.xlLegendPositionBottom;
+
+                        worksheet.Columns.AutoFit();
+                        MessageBox.Show("Отчет Excel сформирован!\nДиаграмма добавлена на отдельный лист.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        worksheet.Columns.AutoFit();
+                        MessageBox.Show("Отчет Excel сформирован!");
+                    }
                 }
             }
             catch (Exception ex)
