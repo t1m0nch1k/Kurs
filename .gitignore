@@ -1,20 +1,31 @@
 ```
-# Build outputs
+# Build artifacts
 bin/
 obj/
-*.exe
 *.dll
+*.exe
 *.pdb
 *.userprefs
+*.cache
+*.log
 
 # Dependencies
 packages/
-
-# Logs
-*.log
+node_modules/
 
 # User-specific files
 .vs/
 *.user
 *.suo
+*.userosscache
+*.sln.docstates
+
+# Environment specific settings
+.env
+.env.local
+*.local.settings.json
+
+# OS generated files
+.DS_Store
+Thumbs.db
 ```
