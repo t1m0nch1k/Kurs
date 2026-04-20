@@ -1083,6 +1083,13 @@ namespace Kurs
 
         private void btnExportExcel_Click(object sender, RoutedEventArgs e) => ExportStatsToExcel();
 
+        private void btnContractChart_Click(object sender, RoutedEventArgs e)
+        {
+            var chartWindow = new ContractChartWindow();
+            chartWindow.Owner = this;
+            chartWindow.ShowDialog();
+        }
+
         private void btnPrintContract_Click(object sender, RoutedEventArgs e)
         {
             if (gridContracts.SelectedItem is Contracts selected)

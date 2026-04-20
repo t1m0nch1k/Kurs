@@ -105,7 +105,7 @@
                         </Border>
                     </UniformGrid>
 
-                    <Button Content="📊 Отчет в Excel" Click="btnExportExcel_Click" 
+                    <Button Content="📊 Диаграмма контрактов" Click="btnContractChart_Click" 
                             Background="#27AE60" Foreground="White" Padding="10,5" Margin="5"/>
 
                     <TextBlock Text="Цены выкупа металла" FontSize="18" Margin="5,20,0,6"/>
